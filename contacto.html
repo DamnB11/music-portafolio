@@ -20,32 +20,47 @@
     </nav>
   </header>
 
-  <section class="back">
-    <div class="form-box">
-      <form action="Contactame">
-        <h2>Contáctame</h2>
-        <div class="input-box">
-          <span class="icon"><i class="fas fa-user"></i></span>
-          <input type="text" placeholder="Tu Nombre" required>
-        </div>
-        <div class="input-box">
-          <span class="icon"><i class="fas fa-envelope"></i></span>
-          <input type="email" placeholder="Tu Correo" required>
-        </div>
-        <div class="input-box">
-          <span class="icon"><i class="fas fa-comment"></i></span>
-          <textarea placeholder="Tu Mensaje" required></textarea>
-        </div>
-        <div class="input-box">
-          <input type="submit" value="Enviar">
-        </div>
-      </form>
-    </div>
+  <section class="back" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5rem 9%;">
+    <div class="contact-section">
+      <!-- Imagen a la izquierda -->
+      <div class="contact-image">
+        <img src="https://via.placeholder.com/400x500?text=Tu+Imagen" alt="Contacto">
+      </div>
 
-    <div class="social-icons">
-      <a href="#"><i class="fa-brands fa-facebook"></i></a>
+      <!-- Formulario a la derecha -->
+      <div class="form-box">
+        <!-- Reemplaza tu_correo@gmail.com con tu correo real -->
+        <form action="https://formsubmit.co/tu_correo@gmail.com" method="POST">
+          <h2>Contáctame</h2>
+          <div class="input-box">
+            <span class="icon"><i class="fas fa-user"></i></span>
+            <input type="text" name="Nombre" placeholder="Tu Nombre" required>
+          </div>
+          <div class="input-box">
+            <span class="icon"><i class="fas fa-envelope"></i></span>
+            <input type="email" name="Correo" placeholder="Tu Correo" required>
+          </div>
+          <div class="input-box">
+            <span class="icon"><i class="fas fa-comment"></i></span>
+            <textarea name="Mensaje" placeholder="Tu Mensaje" required></textarea>
+          </div>
+          <div class="input-box">
+            <input type="submit" value="Enviar">
+          </div>
+          
+          <div class="social-icons">
+            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </form>
+      </div>
     </div>
   </section>
+
+  <footer>
+    <p>&copy;portafolio David 2025</p>
+  </footer>
 
 </body>
 </html>

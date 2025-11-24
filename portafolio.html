@@ -19,12 +19,235 @@
     </nav>
   </header>
 
-  <section class="back">
-    <div class="hero-content">
-      <h1>Portafolio</h1>
-      <p class="subtitle">Portafolio: añade tus proyectos con imágenes y descripciones.</p>
+  <section class="audio-section" aria-label="Reproductor de audio">
+    <div class="container">
+      <h2>Escucha mi música</h2>
+      <div class="albums-grid">
+        <div class="album" tabindex="0" data-src="STRUM.mpeg" data-art="STRUM.jpg" data-title="STRUM" data-year="(2025)" data-sub="SINGLE" aria-pressed="false">
+          <div class="cover" style="background-image:url('STRUM.jpg')"></div>
+          <div class="vinyl">
+            <div class="disc"></div>
+            <div class="label"></div>
+          </div>
+          <div class="info">
+            <h3 class="info-title">STRUM</h3>
+            <p class="info-year">(2025)</p>
+            <p class="info-sub">• SINGLE •</p>
+          </div>
+          <div class="timeline" aria-hidden="true">
+            <div class="time-left">0:00</div>
+            <div class="progress" role="slider" aria-valuemin="0" aria-valuemax="100" tabindex="0">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="time-right">0:00</div>
+          </div>
+        </div>
+
+        <div class="album" tabindex="0" data-src="Siempre-es-Lo-Mismo.mpeg" data-art="Siempre-es-Lo-Mismo.jpg" data-title="Siempre es lo mismo" data-year="(2025)" data-sub="SINGLE" aria-pressed="false">
+          <div class="cover" style="background-image:url('Siempre-es-Lo-Mismo.jpg')"></div>
+          <div class="vinyl">
+            <div class="disc"></div>
+            <div class="label"></div>
+          </div>
+          <div class="info">
+            <h3 class="info-title">Siempre es lo mismo</h3>
+            <p class="info-year">(2025)</p>
+            <p class="info-sub">• SINGLE •</p>
+          </div>
+          <div class="timeline" aria-hidden="true">
+            <div class="time-left">0:00</div>
+            <div class="progress" role="slider" aria-valuemin="0" aria-valuemax="100" tabindex="0">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="time-right">0:00</div>
+          </div>
+        </div>
+      </div>
+
+
+      
+      <audio id="player" preload="none" style="display:none"></audio>
     </div>
   </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const player = document.getElementById('player');
+      const albums = Array.from(document.querySelectorAll('.album'));
+
+      function deactivateAll(){
+        albums.forEach(a => {
+          a.classList.remove('active');
+          a.setAttribute('aria-pressed','false');
+          const v = a.querySelector('.vinyl'); if (v) v.classList.remove('visible','spinning');
+          const info = a.querySelector('.info'); if (info) info.classList.remove('visible');
+          const tl = a.querySelector('.timeline'); if (tl){ tl.classList.remove('visible'); tl.setAttribute('aria-hidden','true'); }
+        });
+      }
+
+      // initialize: nothing active; covers are visible as provided in inline styles
+      deactivateAll();
+
+      albums.forEach(function(album){
+        const cover = album.querySelector('.cover');
+        const vinyl = album.querySelector('.vinyl');
+
+        album.addEventListener('click', function(){
+          const isActive = album.classList.contains('active');
+          const src = album.getAttribute('data-src');
+          const art = album.getAttribute('data-art');
+          const title = album.getAttribute('data-title') || '';
+          const year = album.getAttribute('data-year') || '';
+          const sub = album.getAttribute('data-sub') || '';
+
+          if (isActive){
+            // toggle off: stop and hide
+            player.pause();
+            album.classList.remove('active');
+            album.setAttribute('aria-pressed','false');
+            // hide vinyl visuals
+            vinyl.classList.remove('visible','spinning');
+            // hide info
+            const infoEl = album.querySelector('.info'); if (infoEl) infoEl.classList.remove('visible');
+            // hide timeline for this album as well
+            const tlOff = album.querySelector('.timeline'); if (tlOff){ tlOff.classList.remove('visible'); tlOff.setAttribute('aria-hidden','true'); }
+            return;
+          }
+
+          // activate this album and deactivate others
+          deactivateAll();
+          album.classList.add('active');
+          album.setAttribute('aria-pressed','true');
+
+          // set art on label if provided
+          let artToUse = art || '';
+          if (artToUse && /\.(mp3|mpeg|ogg|wav)$/i.test(artToUse)){
+            artToUse = artToUse.replace(/\.[^/.]+$/, '.jpg');
+          }
+          if (artToUse){
+            cover.style.backgroundImage = `url(${artToUse})`;
+            const lbl = vinyl.querySelector('.label');
+            if (lbl) lbl.style.backgroundImage = `url(${artToUse})`;
+          }
+
+          // set metadata in info
+          const info = album.querySelector('.info');
+          info.querySelector('.info-title').textContent = title;
+          info.querySelector('.info-year').textContent = year;
+          info.querySelector('.info-sub').textContent = sub;
+
+          // play
+          if (src){
+            player.pause();
+            player.src = src;
+            player.load();
+            player.play().catch(function(){});
+          }
+
+          // show vinyl, info and timeline
+          vinyl.classList.add('visible');
+          // small timeout to allow visible state then spin
+          setTimeout(()=> vinyl.classList.add('spinning'), 60);
+          info.classList.add('visible');
+          const tl = album.querySelector('.timeline');
+          if (tl){ tl.classList.add('visible'); tl.setAttribute('aria-hidden','false'); }
+          // ensure timeline UI updates
+          updateTimelineUI();
+        });
+        // keyboard support: Enter or Space toggles
+        album.addEventListener('keydown', function(e){
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar'){
+            e.preventDefault();
+            album.click();
+          }
+        });
+      });
+
+      // tie ended/pause to hide spinning for whichever album is active
+      player.addEventListener('pause', function(){
+        albums.forEach(a => a.querySelector('.vinyl').classList.remove('spinning'));
+      });
+      player.addEventListener('ended', function(){
+        // stop and hide UI
+        albums.forEach(a => {
+          a.classList.remove('active');
+          a.setAttribute('aria-pressed','false');
+          a.querySelector('.vinyl').classList.remove('spinning','visible');
+          a.querySelector('.info').classList.remove('visible');
+          const tl = a.querySelector('.timeline'); if (tl){ tl.classList.remove('visible'); tl.setAttribute('aria-hidden','true'); }
+        });
+      });
+
+      // Timeline handling: update UI while playing
+      function formatTime(sec){
+        if (!isFinite(sec)) return '0:00';
+        const s = Math.floor(sec%60).toString().padStart(2,'0');
+        const m = Math.floor(sec/60);
+        return `${m}:${s}`;
+      }
+
+      function updateTimelineUI(){
+        const active = albums.find(a => a.classList.contains('active'));
+        if (!active) return;
+        const tl = active.querySelector('.timeline');
+        if (!tl) return;
+        const fill = tl.querySelector('.progress-fill');
+        const left = tl.querySelector('.time-left');
+        const right = tl.querySelector('.time-right');
+        const progress = tl.querySelector('.progress');
+        const dur = player.duration || 0;
+        const cur = player.currentTime || 0;
+        const pct = dur ? Math.max(0, Math.min(100, (cur/dur)*100)) : 0;
+        if (fill) fill.style.width = pct + '%';
+        if (left) left.textContent = formatTime(cur);
+        if (right) right.textContent = formatTime(dur);
+        // update ARIA slider value
+        if (progress) progress.setAttribute('aria-valuenow', Math.round(pct));
+      }
+
+      player.addEventListener('timeupdate', updateTimelineUI);
+      player.addEventListener('loadedmetadata', updateTimelineUI);
+
+      // seeking: attach handlers for each album's timeline progress bar
+      albums.forEach(function(album){
+        const tl = album.querySelector('.timeline');
+        if (!tl) return;
+        const progress = tl.querySelector('.progress');
+        if (!progress) return;
+        progress.addEventListener('click', function(e){
+          // prevent click from bubbling to the album (which would toggle it)
+          e.stopPropagation();
+          // only allow seeking on the active album
+          if (!album.classList.contains('active')) return;
+          const rect = progress.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const ratio = Math.max(0, Math.min(1, x / rect.width));
+          const dur = player.duration || 0;
+          if (dur){
+            // preserve playing state: if it was playing, keep playing after seek
+            const wasPlaying = !player.paused && !player.ended;
+            player.currentTime = ratio * dur;
+            updateTimelineUI();
+            if (wasPlaying) player.play().catch(()=>{});
+          }
+        });
+        progress.addEventListener('keydown', function(e){
+          // prevent keyboard events from bubbling and toggling album
+          e.stopPropagation();
+          if (!album.classList.contains('active')) return;
+          if (!player.duration) return;
+          const step = Math.max(1, Math.floor(player.duration/100));
+          const wasPlaying = !player.paused && !player.ended;
+          if (e.key === 'ArrowRight') { player.currentTime = Math.min(player.duration, player.currentTime + step); updateTimelineUI(); if (wasPlaying) player.play().catch(()=>{}); }
+          if (e.key === 'ArrowLeft') { player.currentTime = Math.max(0, player.currentTime - step); updateTimelineUI(); if (wasPlaying) player.play().catch(()=>{}); }
+        });
+      });
+    });
+  </script>
+
+  <footer>
+     <p>&copy;portafolio David 2025</p>
+  </footer>
 
 </body>
 </html>
