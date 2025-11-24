@@ -614,16 +614,14 @@ audio#player{
   width: 100%;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
 
 .form-box {
   flex: 0 0 52%; 
   min-width: 300px;
-  background: rgba(30, 30, 30, 0.4);
+  background: #1E1E1E;
   padding: 2.6rem 3rem 2.6rem 3rem; 
   border-radius: 8px;
-  border: 1px solid rgba(193, 187, 163, 0.2);
   backdrop-filter: blur(10px);
 }
 
@@ -737,7 +735,7 @@ audio#player{
 /* ========================= */
 
 footer {
-  background: #0b0b0b;
+  background: #1E1E1E;
   border-top: 2px solid #C1BBA3;
   padding: 2rem 9%;
   text-align: center;
@@ -746,7 +744,7 @@ footer {
 
 footer p {
   font-size: 1rem;
-  color: #C1BBA3;
+  color: #979797;
   letter-spacing: 1px;
   font-weight: 600;
   margin: 0;
