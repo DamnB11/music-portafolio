@@ -98,6 +98,16 @@ section{
   background-size: cover;
 }
 
+.hero img {
+  padding-bottom: 5rem;
+  height: 300px;
+}
+
+.hero .hero-content .mezcla{
+  font-size: 2.5rem;
+  color: #ffffff;
+  font-weight: 600;
+}
 /* ------------------------- */
 /*        Sobre mi  */
 /* ------------------------- */
@@ -749,4 +759,39 @@ footer p {
   font-weight: 600;
   margin: 0;
 }
+
+/* ========================= */
+/*      Paint stroke UI      */
+/* Reusable class to make divs look like brush strokes */
+/* Apply: add `paint-stroke` to any block-level element */
+.paint-stroke {
+  position: relative;
+  padding: 2rem 2.4rem;
+  background: linear-gradient(135deg, rgba(160,128,90,0.12), rgba(193,187,163,0.06));
+  color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  overflow: visible;
+  /* create jagged edge with clip-path */
+  clip-path: polygon(0 6%, 98% 0, 100% 24%, 92% 40%, 100% 62%, 96% 100%, 14% 92%, 0 100%);
+}
+
+.paint-stroke::before{
+  content: '';
+  position: absolute;
+  left: -6px; right: -6px; top: -6px; bottom: -6px;
+  background: linear-gradient(135deg, rgba(160,128,90,0.08), rgba(193,187,163,0.04));
+  z-index: -1;
+  filter: blur(6px);
+  clip-path: inherit;
+  transform: rotate(-1.5deg);
+  opacity: 0.9;
+}
+
+/* alternative wider stroke */
+.paint-stroke--wide{ padding: 2.6rem 3rem; clip-path: polygon(0 4%, 96% 0, 100% 20%, 88% 38%, 100% 58%, 94% 100%, 12% 92%, 0 100%); }
+
+/* dark variant */
+.paint-stroke--dark{ background: linear-gradient(135deg, rgba(30,30,30,0.85), rgba(24,24,24,0.9)); color: #C1BBA3; box-shadow: 0 12px 36px rgba(0,0,0,0.7); }
+
 
